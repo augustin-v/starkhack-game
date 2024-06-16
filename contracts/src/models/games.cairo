@@ -69,3 +69,25 @@ impl GameImpl of GameTrait {
         self.outcome
     }
 }
+
+#[cfg(test)]
+mod test {
+    use core::traits::TryInto;
+use core::option::OptionTrait;
+use starknet::ContractAddress;
+    use super::{Game, PlayerType, Outcome, GameTrait};
+    use super::Moves;
+    #[test]
+    fn test_new_game() {
+        let player1: ContractAddress = 0x61.try_into().unwrap();
+        let player2: ContractAddress = 0x62.try_into().unwrap();
+        let game = GameTrait::new(1, player1, player2, PlayerType::Human, PlayerType::Computer);
+
+        assert_eq!(game.player1, player1);
+        assert_eq!(game.player2, player2);
+        assert_eq!(game.player1_score, 0);
+        assert_eq!(game.player2_score, 0);
+        assert_eq!(game.turn, 1);
+        assert_eq!(game.outcome, Outcome::Pending);
+    }
+}
