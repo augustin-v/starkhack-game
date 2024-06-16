@@ -18,3 +18,4 @@
 - Implement Logic
 - Add currency used to bet
 - LLM implementation for intelligent AI dialog
+- Retrieve ContractAddress to implement it in the game logic
