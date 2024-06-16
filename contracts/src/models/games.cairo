@@ -10,6 +10,7 @@ struct PlayerMove {
 
 trait GameTrait {
     fn new(game_id: felt252, player1: ContractAddress, player2: ContractAddress, player1_type: PlayerType, player2_type: PlayerType) -> Game;
+    fn play_turn(ref self: Game, player_move: PlayerMove) -> Outcome;
 }
 
 impl GameImpl of GameTrait {
@@ -24,6 +25,47 @@ impl GameImpl of GameTrait {
             player2_score: 0,
             turn: 1,
             outcome: Outcome::Pending,
+            player1_move: Option::None,
+            player2_move: Option::None,
         }
+    }
+    fn play_turn(ref self: Game, player_move: PlayerMove) -> Outcome {
+        // Ensure the game is still going
+        if let Outcome::Pending = @self.outcome {
+            if self.turn % 2 == 1 {
+                // Player 1's turn
+                if player_move.player != self.player1 {
+                    panic!("It's not Player 2's turn!");
+                }
+                self.player1_move = Option::Some(player_move.move);
+            } else {
+                //Player 2's turn
+                if player_move.player != self.player2 {
+                    panic!("It's not Player 1's turn!");
+                }
+                self.player2_move = Option::Some(player_move.move);
+               // Determine the outcome of the current turn
+                if let (Option::Some(player1_move), Option::Some(player2_move)) = (self.player1_move, self.player2_move) {
+                    if player1_move.beats(player2_move) {
+                        self.player1_score += 1;
+                    } else if player2_move.beats(player1_move) {
+                        self.player2_score += 1;
+                    }
+                }
+                self.player1_move = Option::None;
+                self.player2_move = Option::None;
+            }
+
+            // Determine the overall winner if the game is over
+            if self.player1_score >= 3 {
+                self.outcome = Outcome::Player1;
+            } else if self.player2_score >= 3 {
+                self.outcome = Outcome::Player2;
+            }
+
+            self.turn += 1;
+        }
+
+        self.outcome
     }
 }
