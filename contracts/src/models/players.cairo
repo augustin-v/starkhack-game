@@ -1,6 +1,5 @@
 use dojo::database::introspect::{Introspect, Layout, FieldLayout, Ty, Enum, Member};
 use core::poseidon::PoseidonTrait;
-use core::hash::{HashStateTrait, HashStateExTrait};
 
 
 use starknet::ContractAddress;
@@ -20,11 +19,6 @@ enum Outcome {
     Pending,
 }
 
-#[derive(Model, Copy, Drop, Serde, PartialEq)]
-struct Coin {
-    #[key]
-    token_id: u256,
-}
 
 #[derive(Drop, Serde, Introspect)]
 #[dojo::model]
