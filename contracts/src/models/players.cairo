@@ -59,7 +59,7 @@ impl PlayerTypeIntrospection of Introspect<PlayerType> {
     fn ty() -> Ty {
         Ty::Enum(
             Enum {
-                name: 'PlayerType',  // Convert to felt252 if required
+                name: 'PlayerType',  
                 attrs: array![].span(),
                 children: array![
                     (
