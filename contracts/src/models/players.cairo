@@ -1,5 +1,4 @@
 use dojo::database::introspect::{Introspect, Layout, FieldLayout, Ty, Enum, Member};
-use core::poseidon::PoseidonTrait;
 
 
 use starknet::ContractAddress;
