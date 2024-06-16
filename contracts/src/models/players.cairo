@@ -45,33 +45,31 @@ impl PlayerTypeIntrospection of Introspect<PlayerType> {
             array![
                 FieldLayout {
                    selector: selector!("Human"),
-                   layout: Introspect::<PlayerType>::layout() 
+                   layout: Self::layout() 
                 },
                 FieldLayout {
                     selector: selector!("Computer"),
-                    layout: Introspect::<PlayerType>::layout()
+                    layout: Self::layout()
                 },
             ]
                 .span()
         )
     }
-    #[inline(always)]
+    //#[inline(always)]
     fn ty() -> Ty {
         Ty::Enum(
             Enum {
                 name: 'PlayerType',  // Convert to felt252 if required
                 attrs: array![].span(),
                 children: array![
-                    Member {
-                        name: 'Human'.into(),  // Convert to felt252 if required
-                        attrs: array![].span(),
-                        ty: Introspect::<PlayerType>::ty()
-                    },
-                    Member {
-                        name: 'Computer'.into(),  // Convert to felt252 if required
-                        attrs: array![].span(),
-                        ty: Introspect::<PlayerType>::ty()
-                    }
+                    (
+                        'Human'.into(),
+                        Self::ty()
+                    ),
+                    (
+                        'Computer'.into(),
+                        Self::ty()
+                    )
                 ].span()
             }
         )
