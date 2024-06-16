@@ -1,37 +1,86 @@
-use core::dict::Felt252DictTrait;
-#[derive(Drop, Debug)]
+use dojo::database::introspect::{Introspect, Layout, FieldLayout, Ty, Enum, Member};
+use core::poseidon::PoseidonTrait;
+use core::hash::{HashStateTrait, HashStateExTrait};
+
+
+use starknet::ContractAddress;
+#[derive(Drop, Debug, Serde)]
 enum PlayerType {
     Human,
     Computer,
 }
-#[derive(Drop)]
-struct UserDatabase<T> {
-    users_updates: u64,
-    balances: Felt252Dict<u64>,
-    player_types: PlayerType,
+
+#[derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
+enum Outcome {
+    // player 1 won
+    Player1,
+    // player 2 won
+    Player2,
+    // Game not over
+    Pending,
 }
 
-trait UserDatabaseTrait {
-   fn new() -> UserDatabase;
-   fn update_user(ref self: UserDatabase, name: felt252, balance: T, player_type: PlayerType)
-   fn get_balance(ref self: UserDatabase, name: felt252) -> T;
-   fn get_player_type(ref self: UserDatabase, name: felt252) -> PlayerType;
+#[derive(Model, Copy, Drop, Serde, PartialEq)]
+struct Coin {
+    #[key]
+    token_id: u256,
 }
 
-impl UserDatabaseImpl of UserDatabaseTrait {
-    // Creates a database
-    fn new() -> UserDatabase {
-        UserDatabase { users_updates: 0, balances: Felt252Dict::new(), player_types: Default::default() }
+#[derive(Drop, Serde, Introspect)]
+#[dojo::model]
+struct Game {
+    #[key]
+    game_id: felt252,
+    player1: ContractAddress,
+    player2: ContractAddress,
+    player1_type: PlayerType,
+    player2_type: PlayerType,
+    player1_score: u8,
+    player2_score: u8,
+    turn: u8,
+    outcome: Outcome,
+}
+
+
+impl PlayerTypeIntrospection of Introspect<PlayerType> {
+    #[inline(always)]
+    fn size() -> Option<usize> {
+        Option::Some(2)
     }
-    fn get_balance(ref self: UserDatabase, name: felt252) -> T {
-        self.balances.get(name)
+    fn layout() -> Layout {
+        Layout::Enum(
+            array![
+                FieldLayout {
+                   selector: selector!("Human"),
+                   layout: Introspect::<PlayerType>::layout() 
+                },
+                FieldLayout {
+                    selector: selector!("Computer"),
+                    layout: Introspect::<PlayerType>::layout()
+                },
+            ]
+                .span()
+        )
     }
-    fn update_user(ref self: UserDatabase, name: felt252, balance: T, player_type: PlayerType) {
-        self.balances.insert(name, balance);
-        self.player_types.insert(name, player_type);
-        self.users_updates += 1;
-    }
-    fn get_player_type(ref self: UserDatabase, name: felt252) -> PlayerType {
-        self.player_types.get(name)
+    #[inline(always)]
+    fn ty() -> Ty {
+        Ty::Enum(
+            Enum {
+                name: 'PlayerType',  // Convert to felt252 if required
+                attrs: array![].span(),
+                children: array![
+                    Member {
+                        name: 'Human'.into(),  // Convert to felt252 if required
+                        attrs: array![].span(),
+                        ty: Introspect::<PlayerType>::ty()
+                    },
+                    Member {
+                        name: 'Computer'.into(),  // Convert to felt252 if required
+                        attrs: array![].span(),
+                        ty: Introspect::<PlayerType>::ty()
+                    }
+                ].span()
+            }
+        )
     }
 }
