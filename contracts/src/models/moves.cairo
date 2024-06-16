@@ -13,7 +13,7 @@ trait MovesTrait {
     fn beats(self: Moves, other: Moves) -> bool;
 }
 
-impl MoveImpl of MovesTrait {
+impl MovesImpl of MovesTrait {
     
     fn beats(self: Moves, other: Moves) -> bool {
         match (self, other) {
@@ -34,6 +34,8 @@ mod test{
         let rock = Moves::Rock;
         let paper = Moves::Paper;
         assert!(paper.beats(rock));
+        let rock = Moves::Rock;
+        let paper = Moves::Paper;
         assert!(!rock.beats(paper));
     }
 }
