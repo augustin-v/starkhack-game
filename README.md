@@ -11,3 +11,10 @@
 - Scissors beats Paper.
 - Paper beats Rock.
 - If both choices are the same, it's a draz and no tokens are exhanged.
+
+## TODO
+
+- Add interface
+- Implement Logic
+- Add currency used to bet
+- LLM implementation for intelligent AI dialog
