@@ -2,7 +2,7 @@ use super::players::{Game};
 
 
 
-#[derive(Drop, Debug, Introspect)]
+#[derive(Drop, Serde, Introspect, Copy, Clone, Debug)]
 enum Moves {
     Rock,
     Paper,
@@ -24,6 +24,8 @@ impl MovesImpl of MovesTrait {
         }
     }
 }
+
+
 
 #[cfg(test)]
 mod test{
