@@ -2,7 +2,7 @@ use super::players::{Game, PlayerType, Outcome};
 use super::moves::{Moves, MovesTrait};
 use starknet::ContractAddress;
 
-#[derive(Drop, Debug, Introspect)]
+#[derive(Drop, Debug, Introspect, Serde)]
 struct PlayerMove {
     player: ContractAddress,
     move: Moves,

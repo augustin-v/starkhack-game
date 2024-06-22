@@ -1,6 +1,6 @@
 use dojo::database::introspect::{Introspect, Layout, FieldLayout, Ty, Enum, Member};
 use super::moves::Moves;
-
+use dojo::world;
 use starknet::ContractAddress;
 #[derive(Drop, Debug, Serde, Copy, Clone)]
 enum PlayerType {
@@ -8,7 +8,7 @@ enum PlayerType {
     Computer,
 }
 
-#[derive(Serde, Drop, Introspect, Copy, Clone, Debug, PartialEq)]
+#[derive(Model, Serde, Drop, Introspect, Copy, Clone, Debug, PartialEq)]
 enum Outcome {
     // player 1 won
     Player1,
@@ -19,7 +19,7 @@ enum Outcome {
 }
 
 
-#[derive(Drop, Serde, Introspect)]
+#[derive(Drop, Serde, Introspect, Model)]
 #[dojo::model]
 struct Game {
     #[key]
