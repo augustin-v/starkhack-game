@@ -1,3 +1,6 @@
+build with:
+`sozo build`
+
 ## Game flow:
 
 - Players place a bet using tokens.
