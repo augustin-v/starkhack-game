@@ -1,8 +1,8 @@
-use super::players::{Game, PlayerType, Outcome};
+use super::players::{Game, PlayerType, Outcome, OutcomeResult};
 use super::moves::{Moves, MovesTrait};
 use starknet::ContractAddress;
 
-#[derive(Drop, Debug, Introspect, Serde)]
+#[derive(Model, Drop, Debug, Introspect, Serde)]
 struct PlayerMove {
     player: ContractAddress,
     move: Moves,
@@ -10,7 +10,7 @@ struct PlayerMove {
 
 trait GameTrait {
     fn new(game_id: felt252, player1: ContractAddress, player2: ContractAddress, player1_type: PlayerType, player2_type: PlayerType) -> Game;
-    fn play_turn(ref self: Game, player_move: PlayerMove) -> Outcome;
+    fn play_turn(ref self: Game, player_move: PlayerMove) -> OutcomeResult;
 }
 
 impl GameImpl of GameTrait {
@@ -24,14 +24,14 @@ impl GameImpl of GameTrait {
             player1_score: 0,
             player2_score: 0,
             turn: 1,
-            outcome: Outcome::Pending,
+            outcome: OutcomeResult::Pending,
             player1_move: Option::None,
             player2_move: Option::None,
         }
     }
-    fn play_turn(ref self: Game, player_move: PlayerMove) -> Outcome {
+    fn play_turn(ref self: Game, player_move: PlayerMove) -> OutcomeResult {
         // Ensure the game is still going
-        if let Outcome::Pending = @self.outcome {
+        if let OutcomeResult::Pending = @self.outcome {
             if self.turn % 2 == 1 {
                 // Player 1's turn
                 if player_move.player != self.player1 {
@@ -58,9 +58,9 @@ impl GameImpl of GameTrait {
 
             // Determine the overall winner if the game is over
             if self.player1_score >= 3 {
-                self.outcome = Outcome::Player1;
+                self.outcome = OutcomeResult::Player1;
             } else if self.player2_score >= 3 {
-                self.outcome = Outcome::Player2;
+                self.outcome = OutcomeResult::Player2;
             }
 
             self.turn += 1;
@@ -75,7 +75,7 @@ mod test {
     use core::traits::TryInto;
 use core::option::OptionTrait;
 use starknet::ContractAddress;
-    use super::{Game, PlayerType, Outcome, GameTrait};
+    use super::{Game, PlayerType, Outcome, GameTrait, OutcomeResult};
     use super::Moves;
     #[test]
     fn test_new_game() {
@@ -88,6 +88,6 @@ use starknet::ContractAddress;
         assert_eq!(game.player1_score, 0);
         assert_eq!(game.player2_score, 0);
         assert_eq!(game.turn, 1);
-        assert_eq!(game.outcome, Outcome::Pending);
+        assert_eq!(game.outcome, OutcomeResult::Pending);
     }
 }

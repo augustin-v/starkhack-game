@@ -1,5 +1,6 @@
-use dojo_starter::models::games::{Game, PlayerType, Outcome, PlayerMove};
+use dojo_starter::models::games::{Game, PlayerType,  PlayerMove};
 use dojo_starter::models::moves::{Moves};
+use dojo_starter::models::players::{Outcome};
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use starknet::ContractAddress;
 #[starknet::interface]
@@ -11,7 +12,8 @@ trait IGameActions<TContractState> {
 #[starknet::contract]
 mod game_actions {
     use super::IGameActions;
-    use dojo_starter::models::games::{Game, PlayerType, Outcome, PlayerMove, GameTrait};
+    use dojo_starter::models::games::{Game, PlayerType,  PlayerMove, GameTrait};
+    use dojo_starter::models::players::{Outcome};
     use dojo_starter::models::moves::{Moves};
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use starknet::ContractAddress;
@@ -29,14 +31,21 @@ mod game_actions {
             let game_id = 1; // generate_game_id();
             let new_game = GameTrait::new(game_id, player1, player2, player1_type, player2_type);
 
-            set!(world,  (new_game));
+            set!(world, (new_game));
         }
 
         fn play_turn(self: @ContractState, world: IWorldDispatcher, player_move: PlayerMove) {
             let game_id = 2; // get_game_id_from_player(player_move.player);
             let mut game: Game = get!(world, game_id, (Game));
 
-            let outcome = GameTrait::play_turn(ref game, player_move);
+            let res = GameTrait::play_turn(ref game, player_move);
+            set!(world, (game));
+
+            let outcome = Outcome {
+                result: res,
+                details: '{player_move}',
+            };
+
             set!(world, (outcome));
         }
     }

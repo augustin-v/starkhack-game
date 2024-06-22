@@ -8,8 +8,8 @@ enum PlayerType {
     Computer,
 }
 
-#[derive(Model, Serde, Drop, Introspect, Copy, Clone, Debug, PartialEq)]
-enum Outcome {
+#[derive(Model,Serde, Drop, Introspect, Copy, Clone, Debug, PartialEq)]
+enum OutcomeResult {
     // player 1 won
     Player1,
     // player 2 won
@@ -17,9 +17,15 @@ enum Outcome {
     // Game not over
     Pending,
 }
+#[derive(Model, Serde, Drop, Introspect, Copy,  Debug, PartialEq)]
+#[dojo::model]
+struct Outcome {
+    #[key]
+    result: OutcomeResult,
+    details: felt252,
+}
 
-
-#[derive(Drop, Serde, Introspect, Model)]
+#[derive(Drop, Serde, Introspect)]
 #[dojo::model]
 struct Game {
     #[key]
@@ -31,7 +37,7 @@ struct Game {
     player1_score: u8,
     player2_score: u8,
     turn: u8,
-    outcome: Outcome,
+    outcome: OutcomeResult,
     player1_move: Option<Moves>,
     player2_move: Option<Moves>,
 }
