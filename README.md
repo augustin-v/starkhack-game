@@ -5,7 +5,7 @@ build with:
 
 - Players place a bet using tokens.
 - Players choose one of three options: Rock, Paper, or Scissors.
-- AI opponent also makes a choice.
+- opponent also makes a choice.
 - Winner takes the bet amount.
 
 ## Game Rules:
@@ -19,5 +19,5 @@ build with:
 
 - Add interface
 - Add currency used to bet
-- LLM implementation for intelligent AI dialog
+- LLM implementation for fun and intelligent AI commentary over the game
 - Retrieve ContractAddress to implement it in the game logic
